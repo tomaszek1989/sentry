@@ -1,10 +1,16 @@
 from __future__ import absolute_import
 
+from rest_framework import serializers
+
 from sentry.api.bases.organization import (
     OrganizationEndpoint
 )
 from sentry.api.exceptions import ResourceDoesNotExist
 from sentry.models import Dashboard
+
+
+class DashboardSerializer(serializers.Serializer):
+    title = serializers.CharField(required=True)
 
 
 class OrganizationDashboardEndpoint(OrganizationEndpoint):
