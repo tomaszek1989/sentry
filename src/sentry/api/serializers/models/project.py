@@ -340,6 +340,11 @@ def bulk_fetch_project_latest_releases(projects):
     attribute representing the project that they're the latest release for. If
     no release found, no entry will be returned for the given project.
     """
+    # XXX: This query could be very inefficient for projects with a large number
+    # of releases. To work around this, we only check the 20 most recent
+    # releases associated with a project. This could potentially result in not
+    # having the correct most recent release, but in practice will likely work
+    # fine.
     return list(Release.objects.raw(
         u"""
         SELECT lr.project_id as actual_project_id, r.*
@@ -347,7 +352,13 @@ def bulk_fetch_project_latest_releases(projects):
             SELECT (
                 SELECT lrr.id
                 FROM sentry_release lrr
-                JOIN sentry_release_project lrp ON lrp.release_id = lrr.id
+                JOIN (
+                    SELECT *
+                    FROM sentry_release_project lrp
+                    WHERE lrp.project_id = p.id
+                    ORDER BY lrp.release_id DESC
+                    LIMIT 20
+                ) lrp ON lrp.release_id = lrr.id
                 WHERE lrp.project_id = p.id
                 ORDER BY COALESCE(lrr.date_released, lrr.date_added) DESC
                 LIMIT 1
