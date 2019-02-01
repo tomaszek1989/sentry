@@ -553,7 +553,7 @@ class StoreView(APIView):
         dict_data = dict(data)
 
         if len(json.dumps(dict_data)) > 10000000:
-            raise APIForbidden("Event size got 10MB after normalization.")
+            raise APIForbidden("Event size exceeded 10MB after normalization.")
 
         agent = request.META.get('HTTP_USER_AGENT')
 
