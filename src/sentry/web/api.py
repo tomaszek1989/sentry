@@ -550,8 +550,9 @@ class StoreView(APIView):
         event_manager.normalize()
 
         data = event_manager.get_data()
+        dict_data = dict(data)
 
-        if len(json.dumps(data)) > 10000000:
+        if len(json.dumps(dict_data)) > 10000000:
             raise APIForbidden("Event size got 10MB after normalization.")
 
         agent = request.META.get('HTTP_USER_AGENT')
@@ -573,7 +574,7 @@ class StoreView(APIView):
                     # Relay will (eventually) need to produce a Kafka message
                     # with this JSON format.
                     value=json.dumps({
-                        'data': dict(data),
+                        'data': dict_data,
                         'project_id': project.id,
                         'auth': {
                             'sentry_client': auth.client,
