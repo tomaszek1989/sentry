@@ -549,6 +549,11 @@ class StoreView(APIView):
         self.pre_normalize(event_manager, helper)
         event_manager.normalize()
 
+        data = event_manager.get_data()
+
+        if len(json.dumps(data)) > 10000000:
+            raise APIForbidden("Event size got 10MB after normalization.")
+
         agent = request.META.get('HTTP_USER_AGENT')
 
         # TODO: Some form of coordination between the Kafka consumer
@@ -568,7 +573,7 @@ class StoreView(APIView):
                     # Relay will (eventually) need to produce a Kafka message
                     # with this JSON format.
                     value=json.dumps({
-                        'data': dict(event_manager.get_data()),
+                        'data': dict(data),
                         'project_id': project.id,
                         'auth': {
                             'sentry_client': auth.client,
@@ -590,7 +595,7 @@ class StoreView(APIView):
                 if process_in_kafka:
                     # This event will be processed by the Kafka consumer, so we
                     # shouldn't double process it here.
-                    return event_manager.get_data()['event_id']
+                    return data['event_id']
 
         # Everything after this will eventually be done in a Kafka consumer.
         return process_event(event_manager, project,
