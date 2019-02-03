@@ -46,6 +46,9 @@ class GlobalSelectionHeader extends React.Component {
     // Display Environment selector?
     showEnvironmentSelector: PropTypes.bool,
 
+    // Display Environment selector?
+    showDateSelector: PropTypes.bool,
+
     // Disable automatic routing
     hasCustomRouting: PropTypes.bool,
 
@@ -75,6 +78,7 @@ class GlobalSelectionHeader extends React.Component {
   static defaultProps = {
     hasCustomRouting: false,
     showEnvironmentSelector: true,
+    showDateSelector: true,
     resetParamsOnChange: [],
   };
 
@@ -287,6 +291,7 @@ class GlobalSelectionHeader extends React.Component {
       organization,
       showAbsolute,
       showRelative,
+      showDateSelector,
       showEnvironmentSelector,
     } = this.props;
     const {period, start, end, utc} = this.props.selection.datetime || {};
@@ -318,6 +323,8 @@ class GlobalSelectionHeader extends React.Component {
           </React.Fragment>
         )}
 
+        {showDateSelector && (
+          <React.Fragment>
         <HeaderSeparator />
         <HeaderItemPosition>
           <TimeRangeSelector
@@ -332,6 +339,9 @@ class GlobalSelectionHeader extends React.Component {
             onUpdate={this.handleUpdateTime}
           />
         </HeaderItemPosition>
+        </React.Fragment>
+        )}
+
       </Header>
     );
   }

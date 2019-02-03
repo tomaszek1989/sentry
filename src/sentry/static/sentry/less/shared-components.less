@@ -1026,8 +1026,14 @@ table.integrations {
           fill: @gray-lightest;
         }
 
+        &.success {
+          background: @green-light;
+          fill: @green-light;
+        }
+
         &.rate-limited,
-        &.dropped {
+        &.dropped,
+        &.error {
           background: @red;
           fill: @red;
           min-height: 0;
@@ -1048,8 +1054,14 @@ table.integrations {
           fill: @gray-light;
         }
 
+        &.success {
+          background: @green;
+          fill: @green;
+        }
+
         &.rate-limited,
-        &.dropped {
+        &.dropped,
+        &.error {
           background: @red-dark;
           fill: @red-dark;
         }

@@ -124,7 +124,7 @@ class Monitor(Model):
                 },
                 'contexts': {
                     'monitor': {
-                        'id': self.id,
+                        'id': self.guid,
                     },
                 },
             },

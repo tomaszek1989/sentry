@@ -98,7 +98,7 @@ const IssueList = createReactClass({
     const {noBorder} = this.props;
 
     if (this.state.loading) body = this.renderLoading();
-    else if (this.state.error) body = <LoadingError onRetry={this.fetchData} />;
+    else if (this.state.error) body = this.renderError();
     else if (this.state.issueIds.length > 0) {
       const panelStyle = noBorder ? {border: 0, borderRadius: 0} : {};
 
@@ -124,9 +124,17 @@ const IssueList = createReactClass({
     return body;
   },
 
+  renderError() {
+    return (
+      <div style={{margin: '18px 18px 0'}}>
+        <LoadingError onRetry={this.fetchData} />
+      </div>
+    );
+  },
+
   renderLoading() {
     return (
-      <div className="box">
+      <div style={{margin: '18px 18px 0'}}>
         <LoadingIndicator />
       </div>
     );
