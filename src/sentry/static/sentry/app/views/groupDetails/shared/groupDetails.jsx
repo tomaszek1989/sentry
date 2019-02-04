@@ -24,6 +24,8 @@ const GroupDetails = createReactClass({
     // Provided in the project version of group details
     project: SentryTypes.Project,
     environment: SentryTypes.Environment,
+    // Provided in org version of group details
+    organization: SentryTypes.Organization,
   },
 
   childContextTypes: {
@@ -77,6 +79,11 @@ const GroupDetails = createReactClass({
 
     if (this.props.environment) {
       query.environment = this.props.environment.name;
+    }
+    if (this.props.organization) {
+      query.enable_snuba = (this.props.organization.features || []).includes('sentry10')
+        ? '1'
+        : '0';
     }
 
     this.api.request(this.getGroupDetailsEndpoint(), {
