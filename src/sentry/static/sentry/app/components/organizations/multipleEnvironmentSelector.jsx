@@ -2,6 +2,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import styled, {css} from 'react-emotion';
 
+import {analytics} from 'app/utils/analytics';
 import {fetchOrganizationEnvironments} from 'app/actionCreators/environments';
 import {t} from 'app/locale';
 import CheckboxFancy from 'app/components/checkboxFancy';
@@ -78,6 +79,11 @@ class MultipleEnvironmentSelector extends React.PureComponent {
         selectedEnvs.add(env.name);
       }
 
+      analytics('environmentselector.toggle', {
+        action: selectedEnvs.has(env.name) ? 'added' : 'removed',
+        path: window.location.pathname,
+      });
+
       this.doChange(Array.from(selectedEnvs.values()), e);
 
       return {
@@ -98,6 +104,12 @@ class MultipleEnvironmentSelector extends React.PureComponent {
   handleClose = () => {
     // Only update if there are changes
     if (!this.state.hasChanges) return;
+
+    analytics('environmentselector.update', {
+      count: this.state.selectedEnvs.size,
+      path: window.location.pathname,
+    });
+
     this.doUpdate();
   };
 
@@ -105,6 +117,10 @@ class MultipleEnvironmentSelector extends React.PureComponent {
    * Clears all selected environments and updates
    */
   handleClear = () => {
+    analytics('environmentselector.clear', {
+      path: window.location.pathname,
+    });
+
     this.setState(
       {
         hasChanges: false,
@@ -121,6 +137,10 @@ class MultipleEnvironmentSelector extends React.PureComponent {
    * Selects an environment, should close menu and initiate an update
    */
   handleSelect = ({value: env}, e) => {
+    analytics('environmentselector.direct_selection', {
+      path: window.location.pathname,
+    });
+
     this.setState(state => {
       this.doChange([env.name], e);
 
